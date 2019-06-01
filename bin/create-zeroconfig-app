@@ -1,3 +1,18 @@
 #!/usr/bin/env node
-const createZeroconfigApp = require('../');
-createZeroconfigApp(process.argv.slice(2));
+const run = require('../lib/run');
+const fetch = require('node-fetch');
+
+const cwd = process.cwd();
+const [, , targetDirectory, repository] = process.argv;
+
+async function registry() {
+  const res = await fetch('https://raw.githubusercontent.com/react-zeroconfig/create-zeroconfig-app-registry/master/index.json');
+  return await res.json();
+}
+
+run({
+  targetDirectory,
+  repository,
+  getRepositories: registry,
+  cwd,
+});
